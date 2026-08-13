@@ -1,0 +1,1 @@
+"""Core geo-availability logic."""
