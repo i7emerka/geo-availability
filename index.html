@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Geo Availability Report</title>
+  <style>
+    :root {
+      --bg0: #0b1020;
+      --bg1: #121a2b;
+      --card: rgba(22, 32, 52, 0.92);
+      --card-border: rgba(120, 150, 200, 0.12);
+      --text: #eef3ff;
+      --muted: #8fa0bd;
+      --line: rgba(140, 160, 200, 0.12);
+      --pass: #2fe3a1;
+      --pass-bg: rgba(47, 227, 161, 0.12);
+      --partial: #f5c542;
+      --partial-bg: rgba(245, 197, 66, 0.12);
+      --fail: #ff6b7a;
+      --fail-bg: rgba(255, 107, 122, 0.12);
+      --skip: #9aa8c0;
+      --skip-bg: rgba(154, 168, 192, 0.12);
+      --accent: #6ea8ff;
+      --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      font-family: "Segoe UI", ui-sans-serif, system-ui, -apple-system, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(80, 120, 255, 0.18), transparent 55%),
+        radial-gradient(900px 500px at 100% 0%, rgba(47, 227, 161, 0.10), transparent 50%),
+        linear-gradient(180deg, var(--bg0), var(--bg1) 40%, #0d1424);
+    }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 28px 20px 48px;
+    }
+
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px 24px;
+      margin-bottom: 22px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 1.65rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .header .subtitle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+    .legend-swatch {
+      width: 8px; height: 8px; border-radius: 50%;
+    }
+    .sw-pass { background: var(--pass); box-shadow: 0 0 10px var(--pass); }
+    .sw-partial { background: var(--partial); }
+    .sw-fail { background: var(--fail); }
+    .sw-skip { background: var(--skip); }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    @media (max-width: 1000px) {
+      .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .kpi {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+    .kpi-label {
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .kpi-value {
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .kpi-pass .kpi-value { color: var(--pass); }
+    .kpi-partial .kpi-value { color: var(--partial); }
+    .kpi-fail .kpi-value { color: var(--fail); }
+    .kpi-rate .kpi-value { color: var(--accent); }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      max-height: calc(100vh - 280px);
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.875rem;
+      min-width: 1100px;
+    }
+    .report-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      text-align: left;
+      padding: 12px 14px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: linear-gradient(180deg, #18233a 0%, #152033 100%);
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    .report-table th.center,
+    .report-table td.center { text-align: center; }
+
+    .report-table tbody td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+    .report-table tbody tr {
+      transition: background 0.15s ease;
+    }
+    .report-table tbody tr:hover td {
+      background: rgba(110, 168, 255, 0.05);
+    }
+    .report-table tbody tr.row-pass {
+      box-shadow: inset 3px 0 0 var(--pass);
+    }
+    .report-table tbody tr.row-partial {
+      box-shadow: inset 3px 0 0 var(--partial);
+    }
+    .report-table tbody tr.row-fail {
+      box-shadow: inset 3px 0 0 var(--fail);
+    }
+    .report-table tbody tr.row-skip {
+      box-shadow: inset 3px 0 0 var(--skip);
+    }
+
+    .time-main {
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      font-size: 0.84rem;
+    }
+    .geo-code {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 42px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      background: rgba(110, 168, 255, 0.12);
+      color: #b7d3ff;
+      border: 1px solid rgba(110, 168, 255, 0.22);
+    }
+    .cell-sub {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      max-width: 180px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+    .status-pass { color: var(--pass); background: var(--pass-bg); border: 1px solid rgba(47,227,161,0.25); }
+    .status-partial { color: var(--partial); background: var(--partial-bg); border: 1px solid rgba(245,197,66,0.25); }
+    .status-fail { color: var(--fail); background: var(--fail-bg); border: 1px solid rgba(255,107,122,0.25); }
+    .status-skip { color: var(--skip); background: var(--skip-bg); border: 1px solid rgba(154,168,192,0.25); }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+    .badge .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: currentColor;
+    }
+    .badge-ok { color: var(--pass); background: var(--pass-bg); border-color: rgba(47,227,161,0.2); }
+    .badge-bad { color: var(--fail); background: var(--fail-bg); border-color: rgba(255,107,122,0.2); }
+    .badge-muted { color: var(--muted); background: rgba(255,255,255,0.03); border-color: var(--line); }
+
+    .http {
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      color: #c9d7f2;
+    }
+
+    .curr-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .curr-ok {
+      color: var(--pass);
+      background: var(--pass-bg);
+      border-color: rgba(47,227,161,0.22);
+    }
+    .curr-bad {
+      color: var(--fail);
+      background: var(--fail-bg);
+      border-color: rgba(255,107,122,0.22);
+    }
+    .curr-muted {
+      color: var(--muted);
+      background: rgba(255,255,255,0.03);
+      border-color: var(--line);
+    }
+    .curr-arrow { opacity: 0.7; }
+    .curr-exp { text-decoration: line-through; opacity: 0.75; }
+
+    .link {
+      color: #8fbeff;
+      text-decoration: none;
+      word-break: break-all;
+    }
+    .link:hover { text-decoration: underline; color: #b6d4ff; }
+
+    .net {
+      display: inline-flex;
+      padding: 4px 9px;
+      border-radius: 8px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      max-width: 160px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .net-local {
+      color: #9be7ff;
+      background: rgba(100, 200, 255, 0.12);
+      border: 1px solid rgba(100, 200, 255, 0.22);
+    }
+    .net-proxy {
+      color: #d7c4ff;
+      background: rgba(160, 120, 255, 0.12);
+      border: 1px solid rgba(160, 120, 255, 0.22);
+    }
+
+    .col-notes {
+      max-width: 200px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      word-break: break-word;
+    }
+    .muted { color: var(--muted); }
+    .muted-col .link { color: #7a93b8; }
+
+    .empty {
+      padding: 56px 24px;
+      text-align: center;
+    }
+    .empty-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .empty-text { color: var(--muted); }
+    code {
+      background: rgba(255,255,255,0.06);
+      padding: 2px 8px;
+      border-radius: 6px;
+      color: #cfe0ff;
+    }
+
+    .footer {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div>
+        <h1>Geo Availability</h1>
+        <div class="subtitle">35 записей · 21 PASS · источник: geo_checks.csv</div>
+      </div>
+      <div class="legend">
+        <span class="legend-item"><span class="legend-swatch sw-pass"></span>PASS</span>
+        <span class="legend-item"><span class="legend-swatch sw-partial"></span>PARTIAL</span>
+        <span class="legend-item"><span class="legend-swatch sw-fail"></span>FAIL</span>
+        <span class="legend-item"><span class="legend-swatch sw-skip"></span>SKIP</span>
+      </div>
+    </header>
+
+    
+    <div class="kpis">
+      <div class="kpi">
+        <div class="kpi-label">Всего проверок</div>
+        <div class="kpi-value">35</div>
+      </div>
+      <div class="kpi kpi-pass">
+        <div class="kpi-label">PASS</div>
+        <div class="kpi-value">21</div>
+      </div>
+      <div class="kpi kpi-partial">
+        <div class="kpi-label">PARTIAL</div>
+        <div class="kpi-value">11</div>
+      </div>
+      <div class="kpi kpi-fail">
+        <div class="kpi-label">FAIL</div>
+        <div class="kpi-value">3</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">SKIP</div>
+        <div class="kpi-value">0</div>
+      </div>
+      <div class="kpi kpi-rate">
+        <div class="kpi-label">Pass rate</div>
+        <div class="kpi-value">60%</div>
+      </div>
+    </div>
+    
+
+    <section class="panel">
+      
+        <div class="table-wrap">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Время</th>
+                <th>Geo</th>
+                <th>Статус</th>
+                <th class="center">Open</th>
+                <th class="center">HTTP</th>
+                <th class="center">Redirect</th>
+                <th class="center">Lang</th>
+                <th>Currency</th>
+                <th>Final URL</th>
+                <th>Registration</th>
+                <th>Network</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-21 21:44:43</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">CI</span>
+                    <div class="cell-sub">Cote d&#x27;Ivoire</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">fr</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">XOF</span><div class="cell-sub" title="Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)">Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="EG">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-21 21:44:00</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">EG</span>
+                    <div class="cell-sub">Egypt</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ar</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">EGP</span><div class="cell-sub" title="جنيه مصري (EGP)">جنيه مصري (EGP)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari.com/ar/registration" target="_blank" rel="noopener" title="https://fastpari.com/ar/registration">https://fastpari.com/ar/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-21 21:43:12</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">RU</span>
+                    <div class="cell-sub">Russia</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ru</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="BD">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-21 21:42:18</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">BD</span>
+                    <div class="cell-sub">Bangladesh</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">bn</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">BDT</span><div class="cell-sub" title="বাংলাদেশী টাকা (BDT)">বাংলাদেশী টাকা (BDT)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari.com/bn/registration" target="_blank" rel="noopener" title="https://fastpari.com/bn/registration">https://fastpari.com/bn/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="UZ">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-21 21:41:15</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">UZ</span>
+                    <div class="cell-sub">Uzbekistan</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">uz</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">UZS</span><div class="cell-sub" title="O&#x27;zbekiston So&#x27;mi (UZS)">O&#x27;zbekiston So&#x27;mi (UZS)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 17:13:57</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">CI</span>
+                    <div class="cell-sub">Cote d&#x27;Ivoire</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">fr</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">XOF</span><div class="cell-sub" title="Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)">Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="EG">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 17:13:11</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">EG</span>
+                    <div class="cell-sub">Egypt</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ar</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">EGP</span><div class="cell-sub" title="جنيه مصري (EGP)">جنيه مصري (EGP)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari.com/ar/registration" target="_blank" rel="noopener" title="https://fastpari.com/ar/registration">https://fastpari.com/ar/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 17:12:26</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">RU</span>
+                    <div class="cell-sub">Russia</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ru</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="BD">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 17:11:39</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">BD</span>
+                    <div class="cell-sub">Bangladesh</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">bn</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">BDT</span><div class="cell-sub" title="বাংলাদেশী টাকা (BDT)">বাংলাদেশী টাকা (BDT)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari.com/bn/registration" target="_blank" rel="noopener" title="https://fastpari.com/bn/registration">https://fastpari.com/bn/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="UZ">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 17:10:49</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">UZ</span>
+                    <div class="cell-sub">Uzbekistan</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">uz</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">UZS</span><div class="cell-sub" title="O&#x27;zbekiston So&#x27;mi (UZS)">O&#x27;zbekiston So&#x27;mi (UZS)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 16:09:05</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">RU</span>
+                    <div class="cell-sub">Russia</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ru</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="UZ">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:52:27</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">UZ</span>
+                    <div class="cell-sub">Uzbekistan</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">uz</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">UZS</span><div class="cell-sub" title="O&#x27;zbekiston So&#x27;mi (UZS)">O&#x27;zbekiston So&#x27;mi (UZS)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:50:43</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">CI</span>
+                    <div class="cell-sub">Cote d&#x27;Ivoire</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">fr</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">XOF</span><div class="cell-sub" title="Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)">Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:49:50</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">RU</span>
+                    <div class="cell-sub">Russia</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ru</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:36:06</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">CI</span>
+                    <div class="cell-sub">Cote d&#x27;Ivoire</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">fr</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="EG">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:35:04</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">EG</span>
+                    <div class="cell-sub">Egypt</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ar</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari.com/ar/registration" target="_blank" rel="noopener" title="https://fastpari.com/ar/registration">https://fastpari.com/ar/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:30:03</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">CI</span>
+                    <div class="cell-sub">Cote d&#x27;Ivoire</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">fr</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-partial" data-status="PARTIAL" data-geo="EG">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:29:26</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">EG</span>
+                    <div class="cell-sub">Egypt</div>
+                  </td>
+                  <td class="col-status"><span class="status status-partial">PARTIAL</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ar</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari.com/ar/registration" target="_blank" rel="noopener" title="https://fastpari.com/ar/registration">https://fastpari.com/ar/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:15:16</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">RU</span>
+                    <div class="cell-sub">Russia</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ru</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="BD">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:14:27</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">BD</span>
+                    <div class="cell-sub">Bangladesh</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">bn</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari.com/bn/registration" target="_blank" rel="noopener" title="https://fastpari.com/bn/registration">https://fastpari.com/bn/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="UZ">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:13:42</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">UZ</span>
+                    <div class="cell-sub">Uzbekistan</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">uz</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:10:01</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">RU</span>
+                    <div class="cell-sub">Russia</div>
+                  </td>
+                  <td class="col-status"><span class="status status-pass">PASS</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ru</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-partial" data-status="PARTIAL" data-geo="BD">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:09:27</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">BD</span>
+                    <div class="cell-sub">Bangladesh</div>
+                  </td>
+                  <td class="col-status"><span class="status status-partial">PARTIAL</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">bn</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari.com/bn/registration" target="_blank" rel="noopener" title="https://fastpari.com/bn/registration">https://fastpari.com/bn/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-partial" data-status="PARTIAL" data-geo="UZ">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 15:08:53</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">UZ</span>
+                    <div class="cell-sub">Uzbekistan</div>
+                  </td>
+                  <td class="col-status"><span class="status status-partial">PARTIAL</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">uz</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
+                  <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-partial" data-status="PARTIAL" data-geo="RU">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 14:53:45</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">RU</span>
+                    <div class="cell-sub">Russia</div>
+                  </td>
+                  <td class="col-status"><span class="status status-partial">PARTIAL</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ru</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
+                  <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-partial" data-status="PARTIAL" data-geo="BD">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 14:53:19</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">BD</span>
+                    <div class="cell-sub">Bangladesh</div>
+                  </td>
+                  <td class="col-status"><span class="status status-partial">PARTIAL</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">bn</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
+                  <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-partial" data-status="PARTIAL" data-geo="UZ">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 14:52:52</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">UZ</span>
+                    <div class="cell-sub">Uzbekistan</div>
+                  </td>
+                  <td class="col-status"><span class="status status-partial">PARTIAL</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">uz</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
+                  <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-partial" data-status="PARTIAL" data-geo="RU">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 14:49:59</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">RU</span>
+                    <div class="cell-sub">Russia</div>
+                  </td>
+                  <td class="col-status"><span class="status status-partial">PARTIAL</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ru</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
+                  <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-partial" data-status="PARTIAL" data-geo="RU">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 14:41:04</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">RU</span>
+                    <div class="cell-sub">Russia</div>
+                  </td>
+                  <td class="col-status"><span class="status status-partial">PARTIAL</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span><div class="cell-sub">nan</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-5041.pro/en" target="_blank" rel="noopener" title="https://fastpari-5041.pro/en">https://fastpari-5041.pro/en</a></td>
+                  <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-partial" data-status="PARTIAL" data-geo="RU">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 14:18:13</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">RU</span>
+                    <div class="cell-sub">Russia</div>
+                  </td>
+                  <td class="col-status"><span class="status status-partial">PARTIAL</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">ru</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
+                  <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p1.mangoproxy.com:2333 (user=a341c780…)">p1.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-partial" data-status="PARTIAL" data-geo="BD">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 14:17:47</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">BD</span>
+                    <div class="cell-sub">Bangladesh</div>
+                  </td>
+                  <td class="col-status"><span class="status status-partial">PARTIAL</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span><div class="cell-sub">en</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari.com/en" target="_blank" rel="noopener" title="https://fastpari.com/en">https://fastpari.com/en</a></td>
+                  <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-partial" data-status="PARTIAL" data-geo="UZ">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 14:17:18</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">UZ</span>
+                    <div class="cell-sub">Uzbekistan</div>
+                  </td>
+                  <td class="col-status"><span class="status status-partial">PARTIAL</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-http center"><span class="http">200</span></td>
+                  <td class="col-check center"><span class="badge badge-ok"><span class="dot"></span>OK</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span><div class="cell-sub">nan</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><a class="link" href="https://fastpari-92371.bar/en" target="_blank" rel="noopener" title="https://fastpari-92371.bar/en">https://fastpari-92371.bar/en</a></td>
+                  <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="nan">nan</td>
+                </tr>
+                
+                <tr class="row-fail" data-status="FAIL" data-geo="RU">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 14:14:22</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">RU</span>
+                    <div class="cell-sub">Russia</div>
+                  </td>
+                  <td class="col-status"><span class="status status-fail">FAIL</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span></td>
+                  <td class="col-http center"><span class="http">—</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span><div class="cell-sub">nan</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><span class="muted">—</span></td>
+                  <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p1.mangoproxy.com:2333 (user=a341c780…)">p1.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="It looks like you are using Playwright Sync API inside the asyncio loop.
+Please use the Async API instead.">It looks like you are using Playwright Sync API inside the asyncio loop.
+Please use the Async API instead.</td>
+                </tr>
+                
+                <tr class="row-fail" data-status="FAIL" data-geo="BD">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 14:14:22</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">BD</span>
+                    <div class="cell-sub">Bangladesh</div>
+                  </td>
+                  <td class="col-status"><span class="status status-fail">FAIL</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span></td>
+                  <td class="col-http center"><span class="http">—</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span><div class="cell-sub">nan</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><span class="muted">—</span></td>
+                  <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="It looks like you are using Playwright Sync API inside the asyncio loop.
+Please use the Async API instead.">It looks like you are using Playwright Sync API inside the asyncio loop.
+Please use the Async API instead.</td>
+                </tr>
+                
+                <tr class="row-fail" data-status="FAIL" data-geo="UZ">
+                  <td class="col-time">
+                    <div class="time-main">2026-08-07 14:14:16</div>
+                  </td>
+                  <td class="col-geo">
+                    <span class="geo-code">UZ</span>
+                    <div class="cell-sub">Uzbekistan</div>
+                  </td>
+                  <td class="col-status"><span class="status status-fail">FAIL</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span></td>
+                  <td class="col-http center"><span class="http">—</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span></td>
+                  <td class="col-check center"><span class="badge badge-bad"><span class="dot"></span>NO</span><div class="cell-sub">nan</div></td>
+                  <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
+                  <td class="col-url"><span class="muted">—</span></td>
+                  <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
+                  <td class="col-notes" title="BrowserType.launch_persistent_context: Target crashed 
+Call log:
+  - &lt;launching&gt; C:\Users\iksau\AppData\Local\ms-playwright\chromium_headless_shell-1234\chrome-headless-shell-win64\chrome-headless-shell.exe --disable-field-trial-config --disable-background-networking --disable-background-timer-throttling --disable-backgrounding-occluded-windows --disable-back-forward-cache --disable-breakpad --disable-client-side-phishing-detection --disable-component-extensions-with-background-pages --disable-component-update --no-default-browser-check --disable-default-apps --disable-dev-shm-usage --disable-edgeupdater --disable-extensions --disable-features=AvoidUnnecessaryBeforeUnloadCheckSync,BoundaryEventDispatchTracksNodeRemoval,DestroyProfileOnBrowserClose,DialMediaRouteProvider,GlobalMediaControls,HttpsUpgrades,LensOverlay,MediaRouter,PaintHolding,ThirdPartyStoragePartitioning,BlockOriginHeaderModificationOnRedirect,Translate,AutoDeElevate,OptimizationHints,msForceBrowserSignIn,msEdgeUpdateLaunchServicesPreferredVersion --enable-features=CDPScreenshotNewSurface --allow-pre-commit-input --disable-hang-monitor --disable-ipc-flooding-protection --disable-popup-blocking --disable-prompt-on-repost --disable-renderer-backgrounding --disable-updater-scheduler --force-color-profile=srgb --metrics-recording-only --no-first-run --password-store=basic --use-mock-keychain --no-service-autorun --export-tagged-pdf --disable-search-engine-choice-screen --unsafely-disable-devtools-self-xss-warnings --edge-skip-compat-layer-relaunch --disable-infobars --disable-search-engine-choice-screen --disable-sync --enable-unsafe-swiftshader --headless --hide-scrollbars --mute-audio --blink-settings=primaryHoverType=2,availableHoverTypes=2,primaryPointerType=4,availablePointerTypes=4 --no-sandbox --proxy-server=http://p2.mangoproxy.com:2333 --proxy-bypass-list=&lt;-loopback&gt; --user-data-dir=C:\Users\iksau\Desktop\geo-availability\data\playwright_profiles\geo_UZ --remote-debugging-pipe about:blank
+  - &lt;launched&gt; pid=36548
+  - [pid=36548][err] [0807/141417.215:FATAL:gin\v8_initializer.cc:655] Error loading V8 startup snapshot file
+  - [pid=36548][err] [0807/141417.229:FATAL:gin\v8_initializer.cc:655] Error loading V8 startup snapshot file
+  - [pid=36548][err] [0807/141417.240:ERROR:ui\gl\angle_platform_impl.cc:47] Display.cpp:1128 (egl::Display::initialize): ANGLE Display::initialize error 0: Internal Vulkan error (-3): Initialization of an object could not be completed for implementation-specific reasons, in ..\..\third_party\angle\src\libANGLE\renderer\vulkan\vk_renderer.cpp, rx::vk::Renderer::initialize:2463.
+  - [pid=36548][err] ERR: Display.cpp:1128 (egl::Display::initialize): ANGLE Display::initialize error 0: Internal Vulkan error (-3): Initialization of an object could not be completed for implementation-specific reasons, in ..\..\third_party\angle\src\libANGLE\renderer\vulkan\vk_renderer.cpp, rx::vk::Renderer::initialize:2463.
+  - [pid=36548][err] [0807/141417.240:ERROR:ui\gl\egl_util.cc:92] EGL Driver message (Critical) eglInitialize: Internal Vulkan error (-3): Initialization of an object could not be completed for implementation-specific reasons, in ..\..\third_party\angle\src\libANGLE\renderer\vulkan\vk_renderer.cpp, rx::vk::Renderer::initialize:2463.
+  - [pid=36548][err] [0807/141417.242:ERROR:ui\gl\gl_display.cc:630] eglInitialize SwANGLE failed with error EGL_NOT_INITIALIZED
+  - [pid=36548][err] [0807/141417.242:ERROR:ui\gl\gl_display.cc:665] Initialization of all (1) EGL display types failed.
+  - [pid=36548][err] [0807/141417.242:ERROR:ui\gl\init\gl_initializer_win.cc:155] GLDisplayEGL::Initialize failed.
+  - [pid=36548][err] [0807/141417.243:ERROR:ui\gl\angle_platform_impl.cc:47] Display.cpp:1128 (egl::Display::initialize): ANGLE Display::initialize error 0: Internal Vulkan error (-3): Initialization of an object could not be completed for implementation-specific reasons, in ..\..\third_party\angle\src\libANGLE\renderer\vulkan\vk_renderer.cpp, rx::vk::Renderer::initialize:2463.
+  - [pid=36548][err] ERR: Display.cpp:1128 (egl::Display::initialize): ANGLE Display::initialize error 0: Internal Vulkan error (-3): Initialization of an object could not be completed for implementation-specific reasons, in ..\..\third_party\angle\src\libANGLE\renderer\vulkan\vk_renderer.cpp, rx::vk::Renderer::initialize:2463.
+  - [pid=36548][err] [0807/141417.243:ERROR:ui\gl\egl_util.cc:92] EGL Driver message (Critical) eglInitialize: Internal Vulkan error (-3): Initialization of an object could not be completed for implementation-specific reasons, in ..\..\third_party\angle\src\libANGLE\renderer\vulkan\vk_renderer.cpp, rx::vk::Renderer::initialize:2463.
+  - [pid=36548][err] [0807/141417.243:ERROR:ui\gl\gl_display.cc:630] eglInitialize SwANGLE failed with error EGL_NOT_INITIALIZED
+  - [pid=36548][err] [0807/141417.243:ERROR:ui\gl\gl_display.cc:665] Initialization of all (1) EGL display types failed.
+  - [pid=36548][err] [0807/141417.243:ERROR:ui\gl\init\gl_initializer_win.cc:155] GLDisplayEGL::Initialize failed.
+  - [pid=36548][err] [0807/141417.244:ERROR:components\viz\service\main\viz_main_impl.cc:190] Exiting GPU process due to errors during initialization
+  - [pid=36548][err] [0807/141417.299:ERROR:gpu\ipc\service\gpu_channel_manager.cc:928] ContextResult::kFatalFailure: Failed to create shared context for virtualization.
+  - [pid=36548][err] [0807/141420.194:ERROR:content\browser\network_service_instance_impl.cc:618] Network service crashed or was terminated, restarting service.
+  - [pid=36548] &lt;gracefully close start&gt;
+  - [pid=36548][err] [0807/141420.217:FATAL:gin\v8_initializer.cc:655] Error loading V8 startup snapshot file
+  - [pid=36548] &lt;process did exit: exitCode=0, signal=null&gt;
+  - [pid=36548] starting temporary directories cleanup
+  - [pid=36548] finished temporary directories cleanup
+  - [pid=36548] &lt;gracefully close end&gt;">BrowserType.launch_persistent_context: Target crashed 
+Call log:
+  - &lt;launching&gt; C:\Users\iksau\AppData\Local\ms-play…</td>
+                </tr>
+                
+            </tbody>
+          </table>
+        </div>
+        
+    </section>
+
+    <div class="footer">
+      <span>Автотест: open → redirect → language → currency на /registration</span>
+      <span>Обновляется после <code>python check_geo.py</code></span>
+    </div>
+  </div>
+</body>
+</html>
