@@ -335,6 +335,124 @@
       color: #cfe0ff;
     }
 
+    .last-run {
+      margin-bottom: 18px;
+    }
+    .last-run-head h2 {
+      margin: 0 0 4px;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    .geo-cards {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    @media (max-width: 1200px) {
+      .geo-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 720px) {
+      .geo-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .geo-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+    .geo-card.card-pass { box-shadow: inset 3px 0 0 var(--pass), var(--shadow); }
+    .geo-card.card-partial { box-shadow: inset 3px 0 0 var(--partial), var(--shadow); }
+    .geo-card.card-fail { box-shadow: inset 3px 0 0 var(--fail), var(--shadow); }
+    .geo-card.card-skip { box-shadow: inset 3px 0 0 var(--skip), var(--shadow); }
+    .geo-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .geo-checks {
+      display: grid;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .geo-checks > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .geo-url {
+      margin-bottom: 10px;
+      font-size: 0.75rem;
+    }
+    .shots {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .shot {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.68rem;
+    }
+    .shot img {
+      width: 100%;
+      max-width: 160px;
+      height: 88px;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #0a1020;
+    }
+    .history-head {
+      padding: 14px 16px 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 12px 16px 16px;
+    }
+    .page-btn {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .page-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .page-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .page-info {
+      color: var(--muted);
+      font-size: 0.85rem;
+      min-width: 180px;
+      text-align: center;
+    }
+    .hidden-row { display: none !important; }
+
     .footer {
       margin-top: 14px;
       color: var(--muted);
@@ -360,6 +478,110 @@
         <span class="legend-item"><span class="legend-swatch sw-skip"></span>SKIP</span>
       </div>
     </header>
+
+    
+    <section class="last-run">
+      <div class="last-run-head">
+        <div>
+          <h2>Последний прогон</h2>
+          <div class="subtitle">2026-08-24 14:07:26 · 5/5 PASS</div>
+        </div>
+      </div>
+      <div class="geo-cards">
+        
+            <article class="geo-card card-pass">
+              <div class="geo-card-top">
+                <div>
+                  <span class="geo-code">UZ</span>
+                  <div class="cell-sub">Uzbekistan</div>
+                </div>
+                <span class="status status-pass">PASS</span>
+              </div>
+              <div class="geo-checks">
+                <div>Open <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Redirect <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Lang <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Currency <span class="curr-pill curr-ok">UZS</span><div class="cell-sub" title="O&#x27;zbekiston So&#x27;mi (UZS)">O&#x27;zbekiston So&#x27;mi (UZS)</div></div>
+              </div>
+              <div class="geo-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></div>
+              <span class="muted">—</span>
+            </article>
+            
+            <article class="geo-card card-pass">
+              <div class="geo-card-top">
+                <div>
+                  <span class="geo-code">BD</span>
+                  <div class="cell-sub">Bangladesh</div>
+                </div>
+                <span class="status status-pass">PASS</span>
+              </div>
+              <div class="geo-checks">
+                <div>Open <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Redirect <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Lang <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Currency <span class="curr-pill curr-ok">BDT</span><div class="cell-sub" title="বাংলাদেশী টাকা (BDT)">বাংলাদেশী টাকা (BDT)</div></div>
+              </div>
+              <div class="geo-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></div>
+              <span class="muted">—</span>
+            </article>
+            
+            <article class="geo-card card-pass">
+              <div class="geo-card-top">
+                <div>
+                  <span class="geo-code">RU</span>
+                  <div class="cell-sub">Russia</div>
+                </div>
+                <span class="status status-pass">PASS</span>
+              </div>
+              <div class="geo-checks">
+                <div>Open <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Redirect <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Lang <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Currency <span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></div>
+              </div>
+              <div class="geo-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></div>
+              <span class="muted">—</span>
+            </article>
+            
+            <article class="geo-card card-pass">
+              <div class="geo-card-top">
+                <div>
+                  <span class="geo-code">EG</span>
+                  <div class="cell-sub">Egypt</div>
+                </div>
+                <span class="status status-pass">PASS</span>
+              </div>
+              <div class="geo-checks">
+                <div>Open <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Redirect <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Lang <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Currency <span class="curr-pill curr-ok">EGP</span><div class="cell-sub" title="جنيه مصري (EGP)">جنيه مصري (EGP)</div></div>
+              </div>
+              <div class="geo-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></div>
+              <span class="muted">—</span>
+            </article>
+            
+            <article class="geo-card card-pass">
+              <div class="geo-card-top">
+                <div>
+                  <span class="geo-code">CI</span>
+                  <div class="cell-sub">Cote d&#x27;Ivoire</div>
+                </div>
+                <span class="status status-pass">PASS</span>
+              </div>
+              <div class="geo-checks">
+                <div>Open <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Redirect <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Lang <span class="badge badge-ok"><span class="dot"></span>OK</span></div>
+                <div>Currency <span class="curr-pill curr-ok">XOF</span><div class="cell-sub" title="Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)">Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)</div></div>
+              </div>
+              <div class="geo-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></div>
+              <span class="muted">—</span>
+            </article>
+            
+      </div>
+    </section>
+    
 
     
     <div class="kpis">
@@ -392,6 +614,7 @@
 
     <section class="panel">
       
+        <div class="history-head">История</div>
         <div class="table-wrap">
           <table class="report-table">
             <thead>
@@ -406,13 +629,14 @@
                 <th>Currency</th>
                 <th>Final URL</th>
                 <th>Registration</th>
+                <th>Shots</th>
                 <th>Network</th>
                 <th>Notes</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="report-body">
               
-                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="CI">
                   <td class="col-time">
                     <div class="time-main">2026-08-24 14:07:26</div>
                   </td>
@@ -428,11 +652,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">XOF</span><div class="cell-sub" title="Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)">Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="EG">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="EG">
                   <td class="col-time">
                     <div class="time-main">2026-08-24 14:06:45</div>
                   </td>
@@ -448,11 +673,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">EGP</span><div class="cell-sub" title="جنيه مصري (EGP)">جنيه مصري (EGP)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/ar/registration" target="_blank" rel="noopener" title="https://fastpari.com/ar/registration">https://fastpari.com/ar/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-24 14:05:59</div>
                   </td>
@@ -468,11 +694,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="BD">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="BD">
                   <td class="col-time">
                     <div class="time-main">2026-08-24 14:05:08</div>
                   </td>
@@ -488,11 +715,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">BDT</span><div class="cell-sub" title="বাংলাদেশী টাকা (BDT)">বাংলাদেশী টাকা (BDT)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/bn/registration" target="_blank" rel="noopener" title="https://fastpari.com/bn/registration">https://fastpari.com/bn/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="UZ">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="UZ">
                   <td class="col-time">
                     <div class="time-main">2026-08-24 14:04:22</div>
                   </td>
@@ -508,11 +736,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">UZS</span><div class="cell-sub" title="O&#x27;zbekiston So&#x27;mi (UZS)">O&#x27;zbekiston So&#x27;mi (UZS)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="CI">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 22:21:52</div>
                   </td>
@@ -528,11 +757,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">XOF</span><div class="cell-sub" title="Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)">Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="EG">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="EG">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 22:20:58</div>
                   </td>
@@ -548,11 +778,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">EGP</span><div class="cell-sub" title="جنيه مصري (EGP)">جنيه مصري (EGP)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/ar/registration" target="_blank" rel="noopener" title="https://fastpari.com/ar/registration">https://fastpari.com/ar/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 22:20:09</div>
                   </td>
@@ -568,11 +799,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="BD">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="BD">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 22:19:02</div>
                   </td>
@@ -588,11 +820,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">BDT</span><div class="cell-sub" title="বাংলাদেশী টাকা (BDT)">বাংলাদেশী টাকা (BDT)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/bn/registration" target="_blank" rel="noopener" title="https://fastpari.com/bn/registration">https://fastpari.com/bn/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="UZ">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="UZ">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 22:18:16</div>
                   </td>
@@ -608,11 +841,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">UZS</span><div class="cell-sub" title="O&#x27;zbekiston So&#x27;mi (UZS)">O&#x27;zbekiston So&#x27;mi (UZS)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="CI">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 22:15:45</div>
                   </td>
@@ -628,11 +862,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">XOF</span><div class="cell-sub" title="Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)">Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="EG">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="EG">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 22:14:54</div>
                   </td>
@@ -648,11 +883,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">EGP</span><div class="cell-sub" title="جنيه مصري (EGP)">جنيه مصري (EGP)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/ar/registration" target="_blank" rel="noopener" title="https://fastpari.com/ar/registration">https://fastpari.com/ar/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 22:14:08</div>
                   </td>
@@ -668,11 +904,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="BD">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="BD">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 22:13:02</div>
                   </td>
@@ -688,11 +925,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">BDT</span><div class="cell-sub" title="বাংলাদেশী টাকা (BDT)">বাংলাদেশী টাকা (BDT)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/bn/registration" target="_blank" rel="noopener" title="https://fastpari.com/bn/registration">https://fastpari.com/bn/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="UZ">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="UZ">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 22:12:17</div>
                   </td>
@@ -708,11 +946,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">UZS</span><div class="cell-sub" title="O&#x27;zbekiston So&#x27;mi (UZS)">O&#x27;zbekiston So&#x27;mi (UZS)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="CI">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 21:44:43</div>
                   </td>
@@ -728,11 +967,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">XOF</span><div class="cell-sub" title="Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)">Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="EG">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="EG">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 21:44:00</div>
                   </td>
@@ -748,11 +988,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">EGP</span><div class="cell-sub" title="جنيه مصري (EGP)">جنيه مصري (EGP)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/ar/registration" target="_blank" rel="noopener" title="https://fastpari.com/ar/registration">https://fastpari.com/ar/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 21:43:12</div>
                   </td>
@@ -768,11 +1009,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="BD">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="BD">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 21:42:18</div>
                   </td>
@@ -788,11 +1030,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">BDT</span><div class="cell-sub" title="বাংলাদেশী টাকা (BDT)">বাংলাদেশী টাকা (BDT)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/bn/registration" target="_blank" rel="noopener" title="https://fastpari.com/bn/registration">https://fastpari.com/bn/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="UZ">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="UZ">
                   <td class="col-time">
                     <div class="time-main">2026-08-21 21:41:15</div>
                   </td>
@@ -808,11 +1051,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">UZS</span><div class="cell-sub" title="O&#x27;zbekiston So&#x27;mi (UZS)">O&#x27;zbekiston So&#x27;mi (UZS)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="CI">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 17:13:57</div>
                   </td>
@@ -828,11 +1072,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">XOF</span><div class="cell-sub" title="Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)">Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="EG">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="EG">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 17:13:11</div>
                   </td>
@@ -848,11 +1093,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">EGP</span><div class="cell-sub" title="جنيه مصري (EGP)">جنيه مصري (EGP)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/ar/registration" target="_blank" rel="noopener" title="https://fastpari.com/ar/registration">https://fastpari.com/ar/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 17:12:26</div>
                   </td>
@@ -868,11 +1114,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="BD">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="BD">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 17:11:39</div>
                   </td>
@@ -888,11 +1135,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">BDT</span><div class="cell-sub" title="বাংলাদেশী টাকা (BDT)">বাংলাদেশী টাকা (BDT)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/bn/registration" target="_blank" rel="noopener" title="https://fastpari.com/bn/registration">https://fastpari.com/bn/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="UZ">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="UZ">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 17:10:49</div>
                   </td>
@@ -908,11 +1156,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">UZS</span><div class="cell-sub" title="O&#x27;zbekiston So&#x27;mi (UZS)">O&#x27;zbekiston So&#x27;mi (UZS)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 16:09:05</div>
                   </td>
@@ -928,11 +1177,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="UZ">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="UZ">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:52:27</div>
                   </td>
@@ -948,11 +1198,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">UZS</span><div class="cell-sub" title="O&#x27;zbekiston So&#x27;mi (UZS)">O&#x27;zbekiston So&#x27;mi (UZS)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="CI">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:50:43</div>
                   </td>
@@ -968,11 +1219,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">XOF</span><div class="cell-sub" title="Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)">Franc CFA d&#x27;Afrique de l&#x27;Ouest (XOF)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:49:50</div>
                   </td>
@@ -988,11 +1240,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">RUB</span><div class="cell-sub" title="Российский рубль (RUB)">Российский рубль (RUB)</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="CI">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:36:06</div>
                   </td>
@@ -1008,11 +1261,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="EG">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="EG">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:35:04</div>
                   </td>
@@ -1028,11 +1282,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/ar/registration" target="_blank" rel="noopener" title="https://fastpari.com/ar/registration">https://fastpari.com/ar/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="CI">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="CI">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:30:03</div>
                   </td>
@@ -1048,11 +1303,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-87359.pro/fr" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr">https://fastpari-87359.pro/fr</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-87359.pro/fr/registration" target="_blank" rel="noopener" title="https://fastpari-87359.pro/fr/registration">https://fastpari-87359.pro/fr/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-partial" data-status="PARTIAL" data-geo="EG">
+                <tr class="data-row row-partial" data-status="PARTIAL" data-geo="EG">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:29:26</div>
                   </td>
@@ -1068,11 +1324,12 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/ar" target="_blank" rel="noopener" title="https://fastpari.com/ar">https://fastpari.com/ar</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/ar/registration" target="_blank" rel="noopener" title="https://fastpari.com/ar/registration">https://fastpari.com/ar/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:15:16</div>
                   </td>
@@ -1088,11 +1345,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="BD">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="BD">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:14:27</div>
                   </td>
@@ -1108,11 +1366,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/bn/registration" target="_blank" rel="noopener" title="https://fastpari.com/bn/registration">https://fastpari.com/bn/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="UZ">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="UZ">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:13:42</div>
                   </td>
@@ -1128,11 +1387,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-pass" data-status="PASS" data-geo="RU">
+                <tr class="data-row row-pass" data-status="PASS" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:10:01</div>
                   </td>
@@ -1148,11 +1408,12 @@
                   <td class="col-currency"><span class="curr-pill curr-ok">nan</span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru/registration?type=phone&amp;bonus=CASINO&amp;currency=RUB">https://fastpari-5041.pro/ru/registration…</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-partial" data-status="PARTIAL" data-geo="BD">
+                <tr class="data-row row-partial" data-status="PARTIAL" data-geo="BD">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:09:27</div>
                   </td>
@@ -1168,11 +1429,12 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari.com/bn/registration" target="_blank" rel="noopener" title="https://fastpari.com/bn/registration">https://fastpari.com/bn/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-partial" data-status="PARTIAL" data-geo="UZ">
+                <tr class="data-row row-partial" data-status="PARTIAL" data-geo="UZ">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 15:08:53</div>
                   </td>
@@ -1188,11 +1450,12 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
                   <td class="col-url muted-col"><a class="link" href="https://fastpari-92371.bar/uz/registration" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz/registration">https://fastpari-92371.bar/uz/registration</a></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-partial" data-status="PARTIAL" data-geo="RU">
+                <tr class="data-row row-partial" data-status="PARTIAL" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 14:53:45</div>
                   </td>
@@ -1208,11 +1471,12 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-partial" data-status="PARTIAL" data-geo="BD">
+                <tr class="data-row row-partial" data-status="PARTIAL" data-geo="BD">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 14:53:19</div>
                   </td>
@@ -1228,11 +1492,12 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/bn" target="_blank" rel="noopener" title="https://fastpari.com/bn">https://fastpari.com/bn</a></td>
                   <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-partial" data-status="PARTIAL" data-geo="UZ">
+                <tr class="data-row row-partial" data-status="PARTIAL" data-geo="UZ">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 14:52:52</div>
                   </td>
@@ -1248,11 +1513,12 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-92371.bar/uz" target="_blank" rel="noopener" title="https://fastpari-92371.bar/uz">https://fastpari-92371.bar/uz</a></td>
                   <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-partial" data-status="PARTIAL" data-geo="RU">
+                <tr class="data-row row-partial" data-status="PARTIAL" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 14:49:59</div>
                   </td>
@@ -1268,11 +1534,12 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-partial" data-status="PARTIAL" data-geo="RU">
+                <tr class="data-row row-partial" data-status="PARTIAL" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 14:41:04</div>
                   </td>
@@ -1288,11 +1555,12 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/en" target="_blank" rel="noopener" title="https://fastpari-5041.pro/en">https://fastpari-5041.pro/en</a></td>
                   <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-local" title="local_ip (direct)">Local IP</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-partial" data-status="PARTIAL" data-geo="RU">
+                <tr class="data-row row-partial" data-status="PARTIAL" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 14:18:13</div>
                   </td>
@@ -1308,11 +1576,12 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-5041.pro/ru" target="_blank" rel="noopener" title="https://fastpari-5041.pro/ru">https://fastpari-5041.pro/ru</a></td>
                   <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p1.mangoproxy.com:2333 (user=a341c780…)">p1.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-partial" data-status="PARTIAL" data-geo="BD">
+                <tr class="data-row row-partial" data-status="PARTIAL" data-geo="BD">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 14:17:47</div>
                   </td>
@@ -1328,11 +1597,12 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari.com/en" target="_blank" rel="noopener" title="https://fastpari.com/en">https://fastpari.com/en</a></td>
                   <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-partial" data-status="PARTIAL" data-geo="UZ">
+                <tr class="data-row row-partial" data-status="PARTIAL" data-geo="UZ">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 14:17:18</div>
                   </td>
@@ -1348,11 +1618,12 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><a class="link" href="https://fastpari-92371.bar/en" target="_blank" rel="noopener" title="https://fastpari-92371.bar/en">https://fastpari-92371.bar/en</a></td>
                   <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="nan">nan</td>
                 </tr>
                 
-                <tr class="row-fail" data-status="FAIL" data-geo="RU">
+                <tr class="data-row row-fail" data-status="FAIL" data-geo="RU">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 14:14:22</div>
                   </td>
@@ -1368,13 +1639,14 @@
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><span class="muted">—</span></td>
                   <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p1.mangoproxy.com:2333 (user=a341c780…)">p1.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="It looks like you are using Playwright Sync API inside the asyncio loop.
 Please use the Async API instead.">It looks like you are using Playwright Sync API inside the asyncio loop.
 Please use the Async API instead.</td>
                 </tr>
                 
-                <tr class="row-fail" data-status="FAIL" data-geo="BD">
+                <tr class="data-row row-fail" data-status="FAIL" data-geo="BD">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 14:14:22</div>
                   </td>
@@ -1390,13 +1662,14 @@ Please use the Async API instead.</td>
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><span class="muted">—</span></td>
                   <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="It looks like you are using Playwright Sync API inside the asyncio loop.
 Please use the Async API instead.">It looks like you are using Playwright Sync API inside the asyncio loop.
 Please use the Async API instead.</td>
                 </tr>
                 
-                <tr class="row-fail" data-status="FAIL" data-geo="UZ">
+                <tr class="data-row row-fail" data-status="FAIL" data-geo="UZ">
                   <td class="col-time">
                     <div class="time-main">2026-08-07 14:14:16</div>
                   </td>
@@ -1412,6 +1685,7 @@ Please use the Async API instead.</td>
                   <td class="col-currency"><span class="curr-pill curr-bad"><span class="curr-exp">nan</span><span class="curr-arrow">→</span><span class="curr-got">nan</span></span><div class="cell-sub" title="nan">nan</div></td>
                   <td class="col-url"><span class="muted">—</span></td>
                   <td class="col-url muted-col"><span class="muted">—</span></td>
+                  <td class="col-shots"><span class="muted">—</span></td>
                   <td class="col-net"><span class="net net-proxy" title="http://p2.mangoproxy.com:2333 (user=a341c780…)">p2.mangoproxy.com:2333</span></td>
                   <td class="col-notes" title="BrowserType.launch_persistent_context: Target crashed 
 Call log:
@@ -1447,6 +1721,11 @@ Call log:
             </tbody>
           </table>
         </div>
+        <div class="pagination" id="table-pagination" data-rows-per-page="20" data-total-rows="50">
+          <button type="button" class="page-btn" id="page-prev" disabled>← Назад</button>
+          <span class="page-info" id="page-info"></span>
+          <button type="button" class="page-btn" id="page-next">Вперёд →</button>
+        </div>
         
     </section>
 
@@ -1455,5 +1734,51 @@ Call log:
       <span>Обновляется после <code>python check_geo.py</code></span>
     </div>
   </div>
+  <script>
+    (function initTablePagination() {
+      const pagination = document.getElementById('table-pagination');
+      const prevBtn = document.getElementById('page-prev');
+      const nextBtn = document.getElementById('page-next');
+      const pageInfo = document.getElementById('page-info');
+      const rows = Array.from(document.querySelectorAll('#report-body tr.data-row'));
+
+      if (!pagination || rows.length === 0) {
+        if (pagination) pagination.style.display = 'none';
+        return;
+      }
+
+      const rowsPerPage = Number(pagination.dataset.rowsPerPage || 20);
+      const totalPages = Math.max(1, Math.ceil(rows.length / rowsPerPage));
+      let currentPage = 1;
+
+      function renderPage() {
+        rows.forEach((row, index) => {
+          const page = Math.floor(index / rowsPerPage) + 1;
+          row.classList.toggle('hidden-row', page !== currentPage);
+        });
+        pageInfo.textContent = 'Страница ' + currentPage + ' из ' + totalPages + ' · записей: ' + rows.length;
+        prevBtn.disabled = currentPage <= 1;
+        nextBtn.disabled = currentPage >= totalPages;
+      }
+
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage -= 1;
+          renderPage();
+        }
+      });
+      nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+          currentPage += 1;
+          renderPage();
+        }
+      });
+
+      if (totalPages <= 1) {
+        pagination.style.display = 'none';
+      }
+      renderPage();
+    })();
+  </script>
 </body>
 </html>
